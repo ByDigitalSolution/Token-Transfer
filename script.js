@@ -1,64 +1,51 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const usernameInput = document.getElementById('username');
     const amountInput = document.getElementById('amount');
     const continueBtn = document.getElementById('continue-btn');
     const pinOverlay = document.getElementById('pinOverlay');
-    const pinDigits = document.querySelectorAll('.pin-digit');
-    const finalVerifyBtn = document.getElementById('finalVerifyBtn');
-    
-    const SHARED_SECRET = "secure-wallet-key-2026";
-    const REDIRECT_URL = "https://techbydigitalsolution.com/transfer/";
+    const errorMsg = document.getElementById('error-msg');
 
-    // Generate SHA-256 Signature
-    async function generateSignature(amount, ref) {
-        const message = `${amount}|${ref}|${SHARED_SECRET}`;
-        const encoder = new TextEncoder();
-        const data = encoder.encode(message);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
+    continueBtn.addEventListener('click', async () => {
+        const username = usernameInput.value.trim().replace('@', '');
+        const amount = parseFloat(amountInput.value);
 
-    // Step 1: Amount Validation -> Show PIN
-    continueBtn.addEventListener('click', () => {
-        const val = parseFloat(amountInput.value);
-        if (val >= 1 && val <= 5000) {
-            document.getElementById('confirmAmountDisplay').innerText = `$${val.toFixed(2)}`;
+        // Validation Logic
+        if (username.length < 3) {
+            showError("Please enter a valid username");
+        } else if (isNaN(amount) || amount < 100) {
+            showError("Minimum transfer is ₦100.00");
+        } else {
+            // Success: Show PIN Overlay
+            errorMsg.style.visibility = 'hidden';
+            document.getElementById('confirmAmountDisplay').innerText = `₦${amount.toLocaleString()}`;
+            
+            // We store the username to use in the final redirect
+            window.pendingTransfer = { username, amount };
+            
             pinOverlay.style.display = 'flex';
-            pinDigits[0].focus();
-        } else {
-            document.getElementById('error-msg').style.visibility = 'visible';
+            document.querySelectorAll('.pin-digit')[0].focus();
         }
     });
 
-    // Step 2: PIN Handling (Auto-focus & Masking)
-    pinDigits.forEach((input, index) => {
-        input.addEventListener('input', (e) => {
-            if (e.target.value && index < pinDigits.length - 1) {
-                pinDigits[index + 1].focus();
-            }
-        });
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                pinDigits[index - 1].focus();
-            }
-        });
-    });
-
-    // Step 3: Verify & Redirect
-    finalVerifyBtn.addEventListener('click', async () => {
-        const pin = Array.from(pinDigits).map(d => d.value).join('');
+    // Final Payout Logic inside PIN verification
+    document.getElementById('finalVerifyBtn').addEventListener('click', async () => {
+        const pin = Array.from(document.querySelectorAll('.pin-digit')).map(d => d.value).join('');
+        
         if (pin.length === 6) {
-            finalVerifyBtn.innerText = "Authorizing...";
-            const amount = parseFloat(amountInput.value).toFixed(2);
+            const { username, amount } = window.pendingTransfer;
             const ref = Date.now();
-            const signature = await generateSignature(amount, ref);
+            const formattedAmt = amount.toFixed(2);
+            
+            // Signature now includes the username for extra security
+            const signature = await generateSignature(`${username}|${formattedAmt}`, ref);
 
-            setTimeout(() => {
-                window.location.href = `${REDIRECT_URL}?amt=${amount}&ref=${ref}&sig=${signature}`;
-            }, 1000);
-        } else {
-            alert("Please enter full PIN");
+            // Redirect with username included
+            window.location.href = `https://techbydigitalsolution.com/transfer/?user=${username}&amt=${formattedAmt}&ref=${ref}&sig=${signature}`;
         }
     });
 
-    document.getElementById('cancelBtn').addEventListener('click', () => pinOverlay.style.display = 'none');
+    function showError(text) {
+        errorMsg.innerText = text;
+        errorMsg.style.visibility = 'visible';
+    }
 });
