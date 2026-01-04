@@ -1,17 +1,38 @@
-/* Update the currency style for the Naira symbol */
-.currency { 
-    font-size: 2rem; 
-    color: var(--dark-teal); 
-    font-weight: bold; 
-    margin-right: 5px;
+:root {
+    --primary-green: #25D366;
+    --dark-teal: #075E54;
+    --error-red: #d32f2f;
+    --bg-light: #f4f7f6;
 }
 
-/* Ensure the input width accommodates larger Naira values */
-input[type=number] { 
-    border: none; 
-    border-bottom: 2px solid #ddd; 
-    font-size: 2.5rem; 
-    width: 220px; 
-    text-align: left; 
-    outline: none; 
-}
+body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #ddd; display: flex; justify-content: center; }
+
+.wallet-app { width: 100%; max-width: 400px; background: white; min-height: 100vh; position: relative; }
+
+header { background: var(--dark-teal); color: white; padding: 20px; display: flex; gap: 15px; align-items: center; }
+
+.recipient-badge { display: flex; align-items: center; padding: 20px; background: #fafafa; border-bottom: 1px solid #eee; }
+
+.avatar { width: 45px; height: 45px; background: var(--primary-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin-right: 12px; }
+
+.transfer-box { padding: 40px 20px; text-align: center; }
+
+.input-group { display: flex; justify-content: center; align-items: center; margin: 15px 0; }
+
+input[type=number] { border: none; border-bottom: 2px solid #ddd; font-size: 2.5rem; width: 180px; text-align: center; outline: none; }
+
+.cta-button { width: 90%; margin: 10px 5%; padding: 16px; background: var(--primary-green); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
+
+.overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
+
+.pin-box { background: white; width: 85%; max-width: 320px; padding: 30px; border-radius: 20px; text-align: center; animation: pop 0.3s ease; }
+
+.pin-input-container { display: flex; justify-content: space-between; margin: 25px 0; }
+
+.pin-digit { width: 35px; height: 45px; font-size: 24px; text-align: center; border: 2px solid #ddd; border-radius: 8px; background: #f9f9f9; }
+
+.pin-digit:focus { border-color: var(--primary-green); outline: none; background: white; }
+
+.error { color: var(--error-red); font-size: 0.8rem; visibility: hidden; }
+
+@keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
