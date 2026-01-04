@@ -1,8 +1,61 @@
-<div class="transfer-box">
-    <label>Amount to Send</label>
-    <div class="input-group">
-        <span class="currency">₦</span>
-        <input type="number" id="amount" placeholder="0.00" inputmode="decimal">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eWallet Transfer | Secure</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="wallet-app">
+        <header>
+            <div class="back-icon">←</div>
+            <h1>Transfer</h1>
+        </header>
+
+        <main class="content">
+            <div class="recipient-badge">
+                <div class="avatar">TD</div>
+                <div class="details">
+                    <p class="name">Tech Digital Solutions</p>
+                    <p class="status">Verified Merchant</p>
+                </div>
+            </div>
+
+            <div class="transfer-box">
+                <label>Amount to Send</label>
+                <div class="input-group">
+                    <span class="currency">$</span>
+                    <input type="number" id="amount" placeholder="0.00" inputmode="decimal">
+                </div>
+                <p id="error-msg" class="error">Minimum transfer is $1.00</p>
+                <p class="balance-info">Available: <strong>$1,250.00</strong></p>
+            </div>
+
+            <button id="continue-btn" class="cta-button">Continue Transfer</button>
+        </main>
     </div>
-    <p id="error-msg" class="error">Minimum transfer is ₦100.00</p>
+
+    <div id="pinOverlay" class="overlay">
+        <div class="pin-box">
+            <div class="lock-icon">🔒</div>
+            <h3>Enter Secure PIN</h3>
+            <p>Confirming payment of <strong id="confirmAmountDisplay">$0.00</strong></p>
+            
+            <div class="pin-input-container">
+                <input type="password" maxlength="1" class="pin-digit" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-digit" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-digit" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-digit" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-digit" inputmode="numeric">
+                <input type="password" maxlength="1" class="pin-digit" inputmode="numeric">
+            </div>
+
+            <button id="finalVerifyBtn" class="cta-button">Verify & Authorize</button>
+            <button id="cancelBtn" class="text-link">Cancel</button>
+        </div>
     </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
